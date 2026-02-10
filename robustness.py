@@ -201,7 +201,7 @@ for label, overrides in VARIATIONS:
 
 print("\nRunning causal intervention on fusion timing...")
 
-FIXED_FUSION_YEARS = [2030, 2035, 2040, 2045, 2050, 2055, 2060]
+FIXED_FUSION_YEARS = [2026, 2030, 2035, 2040, 2045, 2050, 2055, 2060]
 N_CAUSAL = 10000
 np.random.seed(123)
 
