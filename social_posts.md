@@ -2,11 +2,13 @@
 
 ## LinkedIn
 
-The 21st century forks into abundance or collapse. Which one we get depends, more than on any other variable, on when fusion energy arrives.
+The 21st century forks into abundance or prolonged decline. Which one we get depends, more than on any other variable, on when fusion energy arrives.
 
-We modeled it. 10,000 simulated paths for the global economy through 2100. The result: each year of delay in the 2030–2040 window costs ~$115–166 trillion in expected GDP. Fusion by 2030 → 87% probability of abundance. After 2045 → virtually zero.
+We modeled it. 10,000 simulated paths for the global economy through 2100. The result: each year of delay in the 2030–2040 window costs ~$117–157 trillion in expected GDP. Fusion by 2030 → 87% probability of abundance. After 2045 → virtually zero.
 
-The reason is simple: Climate change increasingly diverts economic output to basic necessities — food, water, cooling, disaster response — which eat away the very surplus funding the R&D that could stop it. A feedback loop with a deadline.
+The bad outcome isn't cinematic apocalypse — it's a slow, grinding return to subsistence. About 25% of simulated futures never recover to today's baseline. The complex systems that sustain eight billion people progressively unravel.
+
+The reason: climate change increasingly diverts economic output to basic necessities — food, water, cooling, disaster response — which eat away the very surplus funding the R&D that could stop it. A feedback loop with a deadline. And the model makes this endogenous: as conditions worsen, the effective fusion timeline itself gets pushed back.
 
 Fusion addresses this feedback loop in two ways. Not only it provides abundant energy increasing economic output, but it also enables solutions to the very problems that are draining that output:
 • Direct air capture (only fusion can power it at scale)
@@ -15,7 +17,9 @@ Fusion addresses this feedback loop in two ways. Not only it provides abundant e
 
 A virtuous cycle, reversing the vicious one.
 
-Thanks to those two compounding effects, the ROI on accelerating fusion is extraordinary. Even at an implausibly high 16% social discount rate, *a single year of acceleration* pays off humanity's *total historical spending on fusion*. No economist has ever seriously proposed a rate that high. By any standard measure, we are underinvesting by at least an order of magnitude, probably more. This finding is robust to greatly varying assumptions.
+What about renewables? We tested this aggressively. Even tripling the modeled contribution of pre-fusion clean energy barely changes the picture. Renewables and fission slow the decline but can't reverse it — the compounding temperature-driven damage and institutional erosion outpace what these technologies can offset.
+
+Thanks to those compounding effects, the ROI on accelerating fusion is extraordinary. Even at an implausibly high 16% social discount rate, *a single year of acceleration* pays off humanity's *total historical spending on fusion*. No economist has ever seriously proposed a rate that high. By any standard measure, we are underinvesting by at least an order of magnitude, probably more. This finding is robust to greatly varying assumptions.
 
 But the real bottleneck isn't money. Even more important than *how much* we invest is *where* and *how* — which technologies to prioritize, which dependencies to unblock, which claims to trust.
 
@@ -38,17 +42,19 @@ The window is open. These tools can help us push through it.
 ## Twitter/X — Thread
 
 **1/**
-The 21st century forks into abundance or collapse.
+The 21st century forks into abundance or prolonged decline.
 
 Which one depends — more than on any other variable — on when fusion energy arrives.
 
 We modeled it. Here's what we found. 🧵
 
 **2/**
-Each year of delay in the 2030–2040 window: ~$115–166 TRILLION in lost GDP.
+Each year of delay in the 2030–2040 window: ~$117–157 TRILLION in lost GDP.
 
 Fusion by 2030 → 87% chance of abundance.
 After 2045 → virtually zero.
+
+The bad outcome isn't Hollywood apocalypse — it's a slow grind back to subsistence. ~25% of futures never recover.
 
 The transition zone is ~15 years wide. We're inside it now.
 
@@ -60,10 +66,12 @@ This eats away the surplus that funds R&D. The technologies that could stop the 
 A closing window.
 
 **4/**
-Fusion doesn't just raise the energy surplus — it enables solutions to the very problems that are draining it:
-• Direct air capture (only fusion can power it at scale)
-• Desalination (decouples water from climate)
-• Industrial decarbonization (closes the carbon loop)
+Can't renewables + fission fix this? We tested it — even assuming they fully offset fossil energy decline, the picture barely changes. They slow the decay but can't reverse it.
+
+Fusion doesn't just raise the energy surplus — it enables solutions to the very problems draining it:
+• Direct air capture
+• Desalination
+• Industrial decarbonization
 
 A virtuous cycle, reversing the vicious one.
 
@@ -90,11 +98,12 @@ The window is open. These tools can help us push through it.
 
 ## Twitter/X — Single Post Version
 
-The 21st century forks into abundance or collapse. The #1 predictor? When fusion energy arrives.
+The 21st century forks into abundance or prolonged decline. The #1 predictor? When fusion energy arrives.
 
 Fusion by 2030: 87% chance of abundance.
 After 2045: virtually zero.
-Each year of delay: ~$115–166T in lost GDP.
+Each year of delay: ~$117–157T in lost GDP.
+Renewables + fission enough to halt energy decline? Still not enough.
 
 We modeled it — and built an AI tool to help beat the deadline.
 

@@ -19,7 +19,7 @@ def run_trajectories(n_years=75, n_paths=10000, fusion_year_fixed=2044,
                      growth_mu=0.028, growth_sigma=0.006,
                      damage_exp=2.6, eroi_decay=0.12,
                      inst_coeff=0.035, gdp_ceiling=2000,
-                     adoption_k=0.5):
+                     adoption_k=0.5, clean_ceiling=0.08):
     """Return (n_paths, n_years) array of GDP trajectories."""
     start_year = 2026
     years = np.arange(start_year, start_year + n_years)
@@ -47,7 +47,10 @@ def run_trajectories(n_years=75, n_paths=10000, fusion_year_fixed=2044,
                 fusion_share = 1.0 / (1.0 + np.exp(-adoption_k * (y - fusion_mid)))
                 E = min(100, E + 3.5 * I * fusion_share)
             else:
-                E = max(1.0, E - eroi_decay - 0.03 * T + np.random.normal(0, 0.04))
+                # Pre-fusion clean energy (solar, wind, fission, geothermal)
+                clean_share = clean_ceiling / (1.0 + np.exp(-0.15 * (y - 2030)))
+                clean_contribution = clean_share * I
+                E = max(1.0, E - eroi_decay - 0.03 * T + clean_contribution + np.random.normal(0, 0.04))
 
             velocity_impact = max(0, prev_y - Y) / (Y + 10)
             stability_loss = (damages / (Y + 5)) + (6.0 / E) + 8.0 * velocity_impact

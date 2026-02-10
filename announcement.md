@@ -8,11 +8,11 @@ The [GAIA Lab](https://www.gaia-lab.de/) develops general-purpose technologies f
 
 ---
 
-The 21st century forks into two futures. In one, civilization reaches a state of **abundance**: enough energy, productive capacity, and institutional resilience to sustain advanced innovation indefinitely — solving problems faster than they accumulate. In the other, compounding climate damage, resource diversion, and institutional decay push the global economy past a point of no return into **collapse** — not a graceful retreat to a simpler life, but an irreversible loss of the complex systems that keep eight billion people alive.
+The 21st century forks into two futures. In one, civilization reaches a state of **abundance**: enough energy, productive capacity, and institutional resilience to sustain advanced innovation indefinitely — solving problems faster than they accumulate. In the other, compounding climate damage, resource diversion, and institutional decay erode the global economy into **prolonged decline** — not necessarily a cinematic apocalypse, but a slow, grinding return to subsistence in which the complex systems that sustain eight billion people progressively unravel.
 
 Which future we get depends, more than on any other single variable, on *when* we commercialize fusion energy.
 
-Civilization runs on energy surplus — the margin left over after you've fed, housed, cooled, and transported everyone. That surplus funds universities, semiconductor fabs, research laboratories, and the long supply chains that make advanced technology possible. Climate change is eating it. We call this the **survival basket tax**: the growing share of output diverted to food security, water supply, cooling, infrastructure repair, and disaster response. Every dollar spent keeping the lights on during a heat wave is a dollar not spent on R&D. As the tax grows, the capacity to develop the very technologies that could stop it — above all, fusion energy — shrinks. The window is closing.
+Civilization runs on energy surplus — the margin left over after you've fed, housed, cooled, warmed, and transported everyone. That surplus funds universities, semiconductor fabs, research laboratories, and the long supply chains that make advanced technology possible. Climate change is eating it. We call this the **survival basket tax**: the growing share of output diverted to food security, water supply, temperature control, infrastructure repair, and disaster response. Every dollar spent keeping the lights on during a heat wave is a dollar not spent on R&D. As the tax grows, the capacity to develop the very technologies that could stop it — above all, fusion energy — shrinks. The window is closing.
 
 Today we're releasing two papers that address this problem from complementary angles.
 
@@ -27,10 +27,11 @@ This paper builds a stochastic simulation of the global economy from 2026 to 210
 
 The numbers are stark:
 
-- Each year of delay in the critical **2030–2040 window** costs approximately **$115–166 trillion** in expected terminal GDP.
+- Each year of delay in the critical **2030–2040 window** costs approximately **$117–157 trillion** in expected terminal GDP.
 - Accelerating fusion to **2030** raises the probability of abundance (>$500T global GDP) to **87%**.
-- Delaying past **2045** makes abundance virtually impossible and systemic collapse increasingly likely.
+- Delaying past **2045** makes abundance virtually impossible and prolonged decline near-certain.
 - Roughly **25% of simulation paths** fail to recover to 2026 baseline levels by 2100.
+- Even assuming pre-fusion clean energy (solar, wind, fission) fully offsets fossil energy decline, the picture barely changes — these technologies slow the decay but cannot, on their own, provide escape velocity.
 
 The mechanism is a feedback loop: declining energy surplus → reduced investment capacity → slower innovation → delayed energy transition → further decline. There is a window during which this loop can be broken by a step-change in EROI — fusion energy being the leading candidate. That window is open now. It will not remain so indefinitely.
 
@@ -62,7 +63,7 @@ The GTT is built with human-in-the-loop AI at every stage. The graph is collabor
 
 The *Escape Velocity* paper demonstrates that the absorptive capacity of the fusion R&D pipeline — not money — is the binding constraint on acceleration. AI tools like the GTT can help relax that constraint: by optimizing portfolio allocation across technology pathways, compressing the deliberation cycles that precede investment decisions, and identifying bottleneck technologies whose acceleration would unblock entire downstream pathways.
 
-More broadly, machine-learning-driven plasma control, surrogate models that replace expensive tokamak shots, and automated materials screening are beginning to shorten the experimental iteration cycles that were previously hard bottlenecks regardless of funding. If these tools shift the transfer function from dollars to years-of-advancement even modestly, the already extraordinary returns to fusion investment become larger still.
+More broadly, ML-driven plasma control, surrogate models that replace expensive tokamak shots, and automated materials screening are beginning to shorten the experimental iteration cycles that were previously hard bottlenecks regardless of funding. If these tools shift the transfer function from dollars to years-of-advancement even modestly, the already extraordinary returns to fusion investment become larger still.
 
 The window is open. These tools can help keep it open longer — and push through it faster.
 

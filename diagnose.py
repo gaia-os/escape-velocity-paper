@@ -34,7 +34,11 @@ def trace_path(fusion_year, seed=42):
         if y >= fusion_year:
             E = min(100, E + 3.5 * I)
         else:
-            E = max(1.0, E - 0.12 - 0.03 * T)
+            # Pre-fusion clean energy (solar, wind, fission, geothermal)
+            clean_ceiling = 0.08
+            clean_share = clean_ceiling / (1.0 + np.exp(-0.15 * (y - 2030)))
+            clean_contribution = clean_share * I
+            E = max(1.0, E - 0.12 - 0.03 * T + clean_contribution)
         
         # Institutional stability
         velocity_impact = max(0, prev_y - Y) / (Y + 10)

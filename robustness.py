@@ -19,7 +19,8 @@ def run_sim(n_years=75, n_paths=10000,
             growth_mu=0.028, growth_sigma=0.006,
             damage_exp=2.6, eroi_decay=0.12,
             inst_coeff=0.035, gdp_ceiling=2000,
-            adoption_k=0.5):
+            adoption_k=0.5, clean_ceiling=0.08,
+            fusion_delay_enabled=True):
     """Return dict of summary statistics for one calibration."""
     start_year = 2026
     years = np.arange(start_year, start_year + n_years)
@@ -45,6 +46,7 @@ def run_sim(n_years=75, n_paths=10000,
         recovered_year = None
         collapsed = False
         always_above = True
+        fusion_delay = 0.0
 
         for i, y in enumerate(years):
             prev_y = Y
@@ -55,12 +57,23 @@ def run_sim(n_years=75, n_paths=10000,
             damage_coeff = 0.003 * (T ** damage_exp)
             damages = Y * damage_coeff
 
-            if y >= fusion_year:
-                fusion_mid = fusion_year + np.log(999) / adoption_k
+            # Endogenous fusion delay: degraded Y or I slow R&D progress
+            if fusion_delay_enabled:
+                effective_fusion_year = fusion_year + fusion_delay
+                if y < effective_fusion_year:
+                    fusion_delay += max(0, 1 - I) * 0.5 + max(0, 1 - Y / 105) * 0.5
+            else:
+                effective_fusion_year = fusion_year
+
+            if y >= effective_fusion_year:
+                fusion_mid = effective_fusion_year + np.log(999) / adoption_k
                 fusion_share = 1.0 / (1.0 + np.exp(-adoption_k * (y - fusion_mid)))
                 E = min(100, E + 3.5 * I * fusion_share)
             else:
-                E = max(1.0, E - eroi_decay - 0.03 * T + np.random.normal(0, 0.04))
+                # Pre-fusion clean energy (solar, wind, fission, geothermal)
+                clean_share = clean_ceiling / (1.0 + np.exp(-0.15 * (y - 2030)))
+                clean_contribution = clean_share * I
+                E = max(1.0, E - eroi_decay - 0.03 * T + clean_contribution + np.random.normal(0, 0.04))
 
             velocity_impact = max(0, prev_y - Y) / (Y + 10)
             stability_loss = (damages / (Y + 5)) + (6.0 / E) + 8.0 * velocity_impact
@@ -154,6 +167,10 @@ VARIATIONS = [
     ("GDP ceiling = 4000T",     {"gdp_ceiling": 4000}),
     ("Fusion $\\mu$ = 2028",    {"fusion_mu": 2028}),
     ("Fusion $\\mu$ = 2045",    {"fusion_mu": 2045}),
+    ("No fusion delay",         {"fusion_delay_enabled": False}),
+    ("Clean ceiling = 0.00",    {"clean_ceiling": 0.00}),
+    ("Clean ceiling = 0.16",    {"clean_ceiling": 0.16}),
+    ("Clean ceiling = 0.24",    {"clean_ceiling": 0.24}),
 ]
 
 N = 10000
@@ -191,6 +208,7 @@ np.random.seed(123)
 causal_results = {}
 for fy_fixed in FIXED_FUSION_YEARS:
     res = run_sim(n_paths=N_CAUSAL, fusion_mu=fy_fixed, fusion_sigma=0.001,
+                  fusion_delay_enabled=False,
                   **{k: v for k, v in BASELINE.items()
                      if k not in ('fusion_mu', 'fusion_sigma')})
     causal_results[fy_fixed] = res
@@ -303,8 +321,8 @@ ax1.legend(lines1 + lines2, labels1 + labels2, loc='center right', fontsize=10,
            framealpha=0.9)
 
 # Annotation: transition zone
-ax1.axvspan(2035, 2045, alpha=0.08, color='orange', label='_nolegend_')
-ax1.text(2040, max(gdp_plot) * 0.85, 'Transition\nZone', ha='center', va='top',
+ax1.axvspan(2030, 2045, alpha=0.08, color='orange', label='_nolegend_')
+ax1.text(2037.5, max(gdp_plot) * 0.85, 'Transition\nZone', ha='center', va='top',
          fontsize=9, fontstyle='italic', color='#92400e')
 
 ax1.set_title('Causal Effect of Fusion Timing', fontsize=14, fontweight='bold')

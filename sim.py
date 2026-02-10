@@ -5,7 +5,7 @@ import pandas as pd
 from scipy.stats import spearmanr
 from scipy.signal import savgol_filter
 
-def run_simulation(n_years=75, n_paths=1000, adoption_k=0.5):
+def run_simulation(n_years=75, n_paths=1000, adoption_k=0.5, clean_ceiling=0.08):
     start_year = 2026
     years = np.arange(start_year, start_year + n_years)
     gdp_results = []
@@ -34,6 +34,7 @@ def run_simulation(n_years=75, n_paths=1000, adoption_k=0.5):
         recovered_year = None
         collapsed = False
         always_above_initial = True
+        fusion_delay = 0.0
 
         for i, y in enumerate(years):
             prev_y = Y
@@ -46,12 +47,20 @@ def run_simulation(n_years=75, n_paths=1000, adoption_k=0.5):
             damage_coeff = 0.003 * (T**2.6)
             damages = Y * damage_coeff
 
-            if y >= fusion_year:
-                fusion_mid = fusion_year + np.log(999) / adoption_k
+            # Endogenous fusion delay: degraded Y or I slow R&D progress
+            effective_fusion_year = fusion_year + fusion_delay
+            if y < effective_fusion_year:
+                fusion_delay += max(0, 1 - I) * 0.5 + max(0, 1 - Y / 105) * 0.5
+
+            if y >= effective_fusion_year:
+                fusion_mid = effective_fusion_year + np.log(999) / adoption_k
                 fusion_share = 1.0 / (1.0 + np.exp(-adoption_k * (y - fusion_mid)))
                 E = min(100, E + 3.5 * I * fusion_share)
             else:
-                E = max(1.0, E - 0.12 - (0.03 * T) + np.random.normal(0, 0.04))
+                # Pre-fusion clean energy (solar, wind, fission, geothermal)
+                clean_share = clean_ceiling / (1.0 + np.exp(-0.15 * (y - 2030)))
+                clean_contribution = clean_share * I
+                E = max(1.0, E - 0.12 - (0.03 * T) + clean_contribution + np.random.normal(0, 0.04))
 
             # 3. Institutional Stability
             velocity_impact = max(0, prev_y - Y) / (Y + 10)
@@ -106,7 +115,7 @@ def run_simulation(n_years=75, n_paths=1000, adoption_k=0.5):
         else:
             durations.append(n_years + 25)
 
-        sensitivity_data.append([fusion_year, c_sensitivity, conflict_brittleness, base_growth, final_path_arr[-1]])
+        sensitivity_data.append([fusion_year + fusion_delay, c_sensitivity, conflict_brittleness, base_growth, final_path_arr[-1]])
 
     return years, np.array(gdp_results), sensitivity_data, depths, speeds, durations, no_downturn_count
 

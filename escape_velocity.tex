@@ -15,6 +15,8 @@
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
 
 \hypersetup{
     colorlinks=true,
@@ -33,7 +35,7 @@ Why Fusion Energy Is a Race Against Civilizational Decay}}
 \maketitle
 
 \begin{abstract}
-Modern industrial civilization operates above a critical thermodynamic threshold: an Energy Return on Investment (EROI) of approximately 12:1, below which the complex service economies that sustain advanced research and development become unviable. Climate change imposes a compounding ``survival basket tax'' on global output, diverting an increasing share of productive capacity toward food, water, cooling, and infrastructure maintenance. We argue that these two dynamics interact to create a \emph{closing window} for the development and deployment of commercial-scale fusion energy---which both decarbonizes the economy and restores the energy surplus needed to sustain advanced innovation. Using a stochastic simulation over the period 2026--2100, we show that the timing of fusion commercialization is the single strongest determinant of long-run economic outcomes---more influential than climate sensitivity, institutional resilience, or baseline growth rates. Each year of delay in the critical 2030--2040 window costs approximately 115--166 trillion dollars in expected terminal GDP. The vast majority of paths pass through a period where things get worse before they get better; fusion timing determines the depth and duration of the trough. Approximately 25\% of paths fail to recover to 2026 baseline levels by 2100, while $\sim$50\% reach a state of abundance ($>$500T GDP). Accelerating the start of commercial fusion to 2030 increases the probability of abundance to 87\%; delaying it to 2045 or later makes abundance virtually impossible and total collapse increasingly likely. These results, qualitatively robust to specifics of parameter calibration, strongly suggest that fusion energy policy should be understood not as one priority among many, but as the critical-path variable governing whether civilization achieves escape velocity from thermodynamic decline. The policy implication is a fundamental reorientation of priorities: massive, sustained investment in fusion commercialization---complemented by AI-enabled tools that optimize R\&D portfolios and compress experimental timelines---alongside institutional resilience measures that keep the window open long enough for deployment to succeed.
+Modern industrial civilization operates above a critical thermodynamic threshold: an Energy Return on Investment (EROI) of approximately 12:1, below which the complex service economies that sustain advanced research and development become unviable. Climate change imposes a compounding ``survival basket tax'' on global output, diverting an increasing share of productive capacity toward food, water, cooling, and infrastructure maintenance. We argue that these two dynamics interact to create a \emph{closing window} for the development and deployment of commercial-scale fusion energy---which both decarbonizes the economy and restores the energy surplus needed to sustain advanced innovation. Using a stochastic simulation over the period 2026--2100, we show that the timing of fusion commercialization is the single strongest determinant of long-run economic outcomes---more influential than climate sensitivity, institutional resilience, baseline growth rates, or pre-fusion clean energy (solar, wind, fission) even under quite optimistic assumptions. Each year of delay in the critical 2030--2040 window costs approximately 117--157 trillion dollars in expected terminal GDP. The vast majority of paths pass through a period where things get worse before they get better; fusion timing determines the depth and duration of the trough. Approximately 25\% of paths fail to recover to 2026 baseline levels by 2100, while $\sim$50\% reach a state of abundance ($>$500T GDP). Accelerating the start of commercial fusion to 2030 increases the probability of abundance to 87\%; delaying it to 2045 or later makes abundance virtually impossible and total collapse increasingly likely. These results, qualitatively robust to specifics of parameter calibration, strongly suggest that fusion energy policy should be understood not as one priority among many, but as the critical-path variable governing whether civilization achieves escape velocity from thermodynamic decline. The policy implication is a fundamental reorientation of priorities: massive, sustained investment in fusion commercialization---complemented by AI-enabled tools that optimize R\&D portfolios and compress experimental timelines---alongside institutional resilience measures that keep the window open long enough for deployment to succeed.
 \end{abstract}
 
 \section{Introduction}
@@ -241,6 +243,71 @@ The window is open when the supply edge exceeds the minimum threshold for succes
 
 \section{Simulation Model}
 
+Figure~\ref{fig:causal} provides a high-level causal diagram of the model's feedback structure before presenting the equations.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    state/.style={draw, rounded corners, minimum width=2.6cm, minimum height=1.1cm,
+                  font=\small\bfseries, fill=blue!8, align=center, line width=0.7pt},
+    posarrow/.style={-{Stealth[length=5pt]}, semithick, blue!60!black},
+    negarrow/.style={-{Stealth[length=5pt]}, semithick, red!70!black},
+]
+
+% --- Nodes: two rows, fusion year centered above ---
+\node[state] (tau) at (0, 3.8)  {$\tau_f^*$\\Effective\\fusion year};
+\node[state] (T)   at (-3.8, 0) {$T(t)$\\Temperature};
+\node[state] (E)   at (3.8, 0)  {$E(t)$\\Energy};
+\node[state] (Y)   at (-3.8, -3.5) {$Y(t)$\\GDP};
+\node[state] (I)   at (3.8, -3.5)  {$I(t)$\\Institutions};
+
+% --- Thermodynamic trap ---
+\node[draw, rounded corners, fill=red!15, font=\small\itshape,
+      minimum width=2.8cm, minimum height=0.8cm, line width=0.7pt] (trap) at (0, -6) {Thermodynamic trap};
+
+% ===================== EDGES =====================
+
+% Fusion year -> Energy (positive: fusion ramp)
+\draw[posarrow] (tau.south east) -- (E.north);
+
+% Temperature -> Energy (negative: EROI decay)
+\draw[negarrow] (T.east) -- (E.west);
+
+% Temperature -> GDP (negative: damages)
+\draw[negarrow] (T.south) -- (Y.north);
+
+% Temperature -> Institutions (negative: stress)
+\draw[negarrow] (T.south east) -- (I.north west);
+
+% Energy -> GDP (positive: E/15 multiplier)
+\draw[posarrow] (E.south west) -- (Y.north east);
+
+% Institutions -> GDP (positive: governance)
+\draw[posarrow] (I.west) -- (Y.east);
+
+% Institutions -> Energy (positive: enables clean energy & fusion adoption)
+\draw[posarrow] (I.north) -- (E.south);
+
+% GDP -> Temperature (negative: emissions) — routed outside left
+\draw[negarrow] (Y.west) -- ++(-1.2, 0) |- (T.west);
+
+% GDP -> Fusion year (negative: low Y delays R&D) — routed outside far left
+\draw[negarrow] (Y.west) -- ++(-1.8, 0) |- (tau.west);
+
+% Institutions -> Fusion year (negative: low I delays R&D) — routed outside far right
+\draw[negarrow] (I.east) -- ++(1.8, 0) |- (tau.east);
+
+% GDP -> Trap (dashed)
+\draw[negarrow, dashed] (Y.south) -- (trap.north west);
+
+% Institutions -> Trap (dashed)
+\draw[negarrow, dashed] (I.south) -- (trap.north east);
+
+\end{tikzpicture}
+\caption{Causal structure of the simulation model. \textcolor{blue!60!black}{\textbf{Blue}} arrows denote positive (reinforcing) effects; \textcolor{red!70!black}{\textbf{red}} arrows denote negative (degrading) effects. Dashed arrows indicate pathways into the absorbing thermodynamic trap. Key feedback loops: temperature degrades energy, institutions, and GDP; GDP drives emissions that raise temperature; declining GDP and institutions delay fusion R\&D; institutions modulate both pre-fusion clean energy deployment and post-fusion adoption.}
+\label{fig:causal}
+\end{figure}
+
 To quantify the dynamics described above, we construct a stochastic simulation model with five coupled state variables evolving over the period 2026--2100.
 
 \subsection{State Variables}
@@ -261,15 +328,23 @@ To quantify the dynamics described above, we construct a stochastic simulation m
 \end{equation}
 where $s \sim \mathcal{N}(3.0, 0.4)$ is climate sensitivity and $\epsilon_T \sim \mathcal{N}(0, 0.04)$ is stochastic variability. The $(1 - 0.018(t-t_0))$ term captures gradual exogenous decarbonization (efficiency improvements, renewable deployment). The $15/E(t)$ term captures the endogenous decarbonization effect of fusion: as energy availability $E$ rises from its pre-fusion baseline of $\sim$15 toward 100, emissions intensity per unit of GDP falls proportionally, reflecting the displacement of fossil fuels by clean energy. This ensures that fusion-powered economic growth does not produce runaway warming---the central physical rationale for fusion as a climate solution.
 
-\paragraph{Energy.} Before fusion ($t < \tau_f$), energy availability declines under climate stress:
+\paragraph{Energy.} Before fusion ($t < \tau_f^*$), energy availability declines under climate stress but is partially offset by pre-fusion clean energy deployment (solar, wind, fission, geothermal):
 \begin{equation}
-    E(t+1) = \max\left(1.0,\; E(t) - 0.12 - 0.03T(t) + \epsilon_E\right)
+    E(t+1) = \max\left(1.0,\; E(t) - 0.12 - 0.03T(t) + \underbrace{\frac{c}{1 + e^{-0.15(t - 2030)}} \cdot I(t)}_{\text{pre-fusion clean energy}} + \epsilon_E\right)
 \end{equation}
-After fusion ($t \geq \tau_f$), energy ramps along a logistic adoption curve:
+where $c = 0.08$ is the clean energy ceiling---calibrated so that at full adoption and institutional health, pre-fusion renewables and fission offset roughly two-thirds of the baseline EROI decay rate (0.12/yr), slowing the decline but not reversing it. This is consistent with the system-level EROI analysis in Section~\ref{sec:why_fusion}: existing low-carbon technologies can extend the window but cannot, by themselves, provide the step-change in energy surplus needed to escape the thermodynamic trap. The logistic adoption curve centered on 2030 reflects the current rapid scaling of solar and wind capacity, and the $I(t)$ multiplier ensures that institutional degradation also hampers renewable deployment.
+
+After fusion ($t \geq \tau_f^*$), energy ramps along a logistic adoption curve:
 \begin{equation}
     E(t+1) = \min\left(100,\; E(t) + 3.5 \cdot I(t) \cdot \sigma(t)\right), \quad \sigma(t) = \frac{1}{1 + e^{-k(t - t_{\text{mid}})}}
 \end{equation}
-where $k = 0.5$ is the adoption steepness and $t_{\text{mid}} = \tau_f + \ln(999)/k$ is chosen so that $\sigma(\tau_f) = 0.001$---i.e., fusion contributes only 0.1\% of its potential at the year of first commercialization, reaching 50\% adoption $\sim$14 years later. This captures the reality that commercial viability does not imply instant fleet deployment: manufacturing scale-up, grid integration, regulatory approval, and site construction impose an irreducible lag. The $I(t)$ multiplier ensures that institutional collapse can further slow adoption even along the S-curve.
+where $k = 0.5$ is the adoption steepness and $t_{\text{mid}} = \tau_f^* + \ln(999)/k$ is chosen so that $\sigma(\tau_f^*) = 0.001$---i.e., fusion contributes only 0.1\% of its potential at the year of first commercialization, reaching 50\% adoption $\sim$14 years later. This captures the reality that commercial viability does not imply instant fleet deployment: manufacturing scale-up, grid integration, regulatory approval, and site construction impose an irreducible lag. The $I(t)$ multiplier ensures that institutional collapse can further slow adoption even along the S-curve.
+
+\paragraph{Endogenous fusion delay.} The effective fusion year $\tau_f^*$ is not fixed but responds endogenously to economic and institutional conditions:
+\begin{equation}
+    \tau_f^*(t) = \tau_f + \sum_{s < t} \left[\max(0,\, 1 - I(s)) \cdot 0.5 + \max\left(0,\, 1 - \frac{Y(s)}{Y_0}\right) \cdot 0.5\right]
+\end{equation}
+where $\tau_f$ is the best-case fusion year drawn at path initialization and $Y_0 = 105$ is the initial GDP baseline. The delay accumulates only in years before fusion arrives: each year in which institutional capacity or GDP is below baseline pushes the effective commercialization date further into the future. This captures the paper's central feedback loop in the fusion timeline itself---the same climate-driven degradation that makes fusion more urgent also makes it harder to develop. When $I = 1$ and $Y = Y_0$ (no degradation), the delay is zero and fusion arrives at its best-case date. In severely degraded paths ($I \approx 0.5$, $Y \approx 50$T), the delay can accumulate at $\sim$0.5 years per year, potentially pushing fusion commercialization back by a decade or more. Note that in the causal intervention analysis (Section~\ref{sec:results_gradient}), the endogenous delay is disabled: the do-calculus framework requires fixing $\tau_f$ exogenously to isolate its causal effect.
 
 \paragraph{Institutional Stability.} Institutions degrade under climate stress, energy scarcity, and economic volatility:
 \begin{equation}
@@ -299,7 +374,7 @@ Each of the 10,000 Monte Carlo paths draws four latent parameters:
 \toprule
 \textbf{Parameter} & \textbf{Distribution} & \textbf{Interpretation} \\
 \midrule
-Fusion year $\tau_f$ & $\mathcal{N}(2035, 7)$ & Year of first commercial fusion reactor \\
+Best-case fusion year $\tau_f$ & $\mathcal{N}(2035, 7)$ & Year of first commercial fusion reactor \\
 Climate sensitivity $s$ & $\mathcal{N}(3.0, 0.4)$ & °C per doubling of CO$_2$ \\
 Brittleness $\beta$ & $\text{Uniform}(0.1, 0.25)$ & Institutional fragility threshold \\
 Base growth $g$ & $\mathcal{N}(0.028, 0.006)$ & Underlying economic growth rate \\
@@ -358,7 +433,7 @@ Spearman rank correlation between each stochastic parameter and final GDP (Figur
 
 The dominance of fusion timing over climate sensitivity is a key finding. It implies that \emph{the most effective climate policy is energy policy}---specifically, accelerating fusion commercialization. Even in high-sensitivity climate scenarios, early fusion produces favorable outcomes; conversely, even in low-sensitivity scenarios, late fusion produces poor outcomes.
 
-\paragraph{Quantifying the fusion timing gradient.} To move beyond rank correlations, we estimate the \emph{causal} effect of fusion timing on terminal GDP using a do-calculus approach: for each target fusion year $\tau_f \in \{2030, 2035, \ldots, 2060\}$, we fix $\tau_f$ to that value and draw all other parameters (climate sensitivity, brittleness, base growth) from their baseline distributions, running 10,000 paths per intervention. This isolates the causal effect of fusion timing from any confounding correlation with other parameter draws (Figure~\ref{fig:gradient}).
+\paragraph{Quantifying the fusion timing gradient.}\label{sec:results_gradient} To move beyond rank correlations, we estimate the \emph{causal} effect of fusion timing on terminal GDP using a do-calculus approach: for each target fusion year $\tau_f \in \{2030, 2035, \ldots, 2060\}$, we fix $\tau_f$ to that value and draw all other parameters (climate sensitivity, brittleness, base growth) from their baseline distributions, running 10,000 paths per intervention. This isolates the causal effect of fusion timing from any confounding correlation with other parameter draws (Figure~\ref{fig:gradient}).
 
 \begin{figure}[H]
     \centering
@@ -367,7 +442,7 @@ The dominance of fusion timing over climate sensitivity is a key finding. It imp
     \label{fig:gradient}
 \end{figure}
 
-The relationship is monotonically decreasing and strikingly nonlinear. Earlier fusion is always better: $\text{do}(\tau_f = 2030)$ yields mean GDP of $\sim$1,596T with 87\% probability of abundance, while $\text{do}(\tau_f = 2060)$ yields only 1T with 53\% probability of collapse---effectively civilizational ruin. The transition is remarkably sharp: P(Abundance) drops from 87\% to near zero between 2030 and 2045, while P(Collapse) rises from zero to 53\% between 2045 and 2060. The GDP gradient is steepest in the 2030--2040 window, where each year of delay costs approximately 115--166T in expected GDP. Before 2032, the gradient is already steep ($\sim$166 T/yr) because the S-curve adoption lag means that even ``early'' fusion takes over a decade to reach full deployment. After 2045, the gradient flattens ($\sim$5 T/yr between 2045 and 2050)---not because delay has become less harmful, but because most of the damage has already been done and the economy has already entered the trap.
+The relationship is monotonically decreasing and strikingly nonlinear. Earlier fusion is always better: $\text{do}(\tau_f = 2030)$ yields mean GDP of $\sim$1,620T with 88\% probability of abundance, while $\text{do}(\tau_f = 2060)$ yields only 2T with 20\% probability of collapse---effectively civilizational ruin. The transition is remarkably sharp: P(Abundance) drops from 88\% to near zero between 2030 and 2045, while P(Collapse) rises from zero to 20\% between 2045 and 2060. The GDP gradient is steepest in the 2030--2040 window, where each year of delay costs approximately 117--157T in expected GDP. Before 2032, the gradient is already steep ($\sim$157 T/yr) because the S-curve adoption lag means that even ``early'' fusion takes over a decade to reach full deployment. After 2045, the gradient flattens ($\sim$8 T/yr between 2042 and 2048)---not because delay has become less harmful, but because most of the damage has already been done and the economy has already entered the trap.
 
 Note that fusion simultaneously provides two benefits: it accelerates GDP growth (through the $E/15$ multiplier on investment) and it \emph{decarbonizes} the economy (emissions intensity scales as $15/E$, so a fusion-powered economy with $E \approx 100$ emits at $\sim$15\% of pre-fusion intensity per unit of output). This means early fusion does not merely grow the economy faster---it arrests the temperature trajectory that would otherwise destroy it.
 
@@ -475,9 +550,9 @@ The standard portfolio approach to climate policy---diversifying across mitigati
     \item \textbf{Survival basket mitigation.} Policies that reduce the survival basket tax---food system resilience, water infrastructure, cooling access---buy time by slowing the closure of the innovation window, even if they do not directly advance fusion. These are not alternatives to fusion investment but force multipliers for it.
 \end{enumerate}
 
-\paragraph{The case for massive investment.} The urgency of point (2) can be made precise. The social return on investment implied by these results is extraordinary---and substantially larger than the terminal GDP figures in Figure~\ref{fig:gradient} suggest. The benefit of accelerating fusion is not a lump sum realized in 2100; it is a \emph{stream} of annual GDP increments beginning at the earlier deployment date and compounding through the end of the century. Computing the full cumulative GDP gain (the integral of the trajectory difference), each year of acceleration in the 2030--2040 window is worth approximately 1,500--3,700 trillion dollar-years of cumulative output---roughly 13$\times$ the terminal-only figure. For comparison, the most expensive fusion project in history---ITER---has a total estimated construction cost of \$22 billion (EU estimate) to \$65 billion (U.S.\ DOE estimate including in-kind contributions).\footnote{ITER cost estimates vary by accounting methodology. The European estimate of ${\sim}$EUR~22 billion covers direct construction; the U.S.\ Department of Energy's estimate of \$65 billion includes in-kind contributions from all member nations. See \url{https://www.iter.org/faqs}.} Even at the upper bound, ITER's \emph{entire lifetime cost} is less than 2\% of the cumulative GDP at stake from a single year of delay.
+\paragraph{The case for massive investment.} The urgency of point (2) can be made precise. The social return on investment implied by these results is extraordinary---and substantially larger than the terminal GDP figures in Figure~\ref{fig:gradient} suggest. The benefit of accelerating fusion is not a lump sum realized in 2100; it is a \emph{stream} of annual GDP increments beginning at the earlier deployment date and compounding through the end of the century. Computing the full cumulative GDP gain (the integral of the trajectory difference), each year of acceleration in the 2030--2040 window is worth approximately 470--3,600 trillion dollar-years of cumulative output---roughly 12$\times$ the terminal-only figure. For comparison, the most expensive fusion project in history---ITER---has a total estimated construction cost of \$22 billion (EU estimate) to \$65 billion (U.S.\ DOE estimate including in-kind contributions).\footnote{ITER cost estimates vary by accounting methodology. The European estimate of ${\sim}$EUR~22 billion covers direct construction; the U.S.\ Department of Energy's estimate of \$65 billion includes in-kind contributions from all member nations. See \url{https://www.iter.org/faqs}.} Even at the upper bound, ITER's \emph{entire lifetime cost} is less than 2\% of the cumulative GDP at stake from a single year of delay.
 
-A generous upper bound on total cumulative global fusion capex---ITER, all national programs, and all private investment since the 1950s---is approximately \$100 billion. Discounting the cumulative GDP gain stream at Nordhaus's 5\% rate yields a present value of $\sim$\$13 trillion per year of acceleration, a return of roughly 125$\times$ the total historical investment. Even at a 10\% discount rate---well above any rate used in climate economics---the return is 11$\times$. The discount rate at which the present value of one year of acceleration merely \emph{equals} total historical fusion capex is approximately 16\%: current investment levels are rational only under a discount rate that no economist has ever seriously proposed. For comparison, the Stern Review uses 1.4\% (implying a return of $\sim$1,000$\times$) and Nordhaus's controversial 5\% still yields $\sim$125$\times$. The binding constraint on fusion investment is not money but the absorptive capacity of the research and engineering pipeline---a constraint that is itself relaxed by early, sustained funding.
+A generous upper bound on total cumulative global fusion capex---ITER, all national programs, and all private investment since the 1950s---is approximately \$100 billion. Discounting the cumulative GDP gain stream yields a present value per year of acceleration that dwarfs this figure at every discount rate used in climate economics: $\sim$1,220$\times$ at the Stern Review's 1.4\%, $\sim$144$\times$ at Nordhaus's 5\%, and still 11$\times$ even at 10\%---well above any rate in the literature. The break-even discount rate, at which the present value of one year of acceleration merely \emph{equals} total historical fusion capex, is approximately 16\%: current investment levels are rational only under a discount rate that no economist has ever seriously proposed. The binding constraint on fusion investment is not money but the absorptive capacity of the research and engineering pipeline---a constraint that is itself relaxed by early, sustained funding.
 
 An important caveat: these figures do \emph{not} imply a linear relationship between funding and acceleration. The transfer function from dollars to years-of-advancement is highly nonlinear, with hard bottlenecks in experimental iteration cycles (each tokamak or laser shot takes time regardless of budget), talent pipeline depth (plasma physicists cannot be trained in months), materials qualification (neutron damage testing requires years of irradiation), and regulatory learning curves. Doubling the budget does not halve the timeline. But the relevant question is not whether the marginal dollar buys a proportional speedup---it is whether the \emph{current} funding level is anywhere near the absorptive frontier. It is not. Global public fusion R\&D spending is approximately \$5 billion per year; private investment, while accelerating, adds perhaps \$5--7 billion more. For a technology whose acceleration by a single year is worth trillions, the system is operating deep in the regime where additional funding \emph{does} buy meaningful acceleration---through parallel experimental programs, redundant engineering approaches, expanded training pipelines, and de-risked supply chain development. The returns calculated above should be understood not as ``spend \$X, get \$Y'' but as ``the expected value of the acceleration achievable by moving from the current starvation-level funding regime to one commensurate with the stakes is extraordinarily large, even under conservative assumptions about the shape of the transfer function.''
 
@@ -497,11 +572,13 @@ A candid assessment of this model must begin with the observation that \emph{nea
 
 We do not regard this as a weakness to be apologized for, but as a feature to be understood. The model is not a forecasting instrument. It does not predict that GDP will reach any particular level by 2100, that the median nadir will occur in 2059, or that 25\% of futures are unrecoverable. These numbers are outputs of a particular calibration and would change---in some cases substantially---under alternative parameter choices.
 
-What the model \emph{does} establish is a \textbf{qualitative structural claim}: that the interaction of thermodynamic thresholds, climate-driven resource reallocation, and capital-dependent innovation creates a feedback topology with specific properties---path dependence, threshold effects, a closing window, and dominance of energy transition timing over other variables. These structural properties are robust across a wide range of calibrations. To demonstrate this concretely, Table~\ref{tab:robustness} reports key outcomes under 10 alternative calibrations, each varying a single parameter while holding the rest at baseline.
+What the model \emph{does} establish is a \textbf{qualitative structural claim}: that the interaction of thermodynamic thresholds, climate-driven resource reallocation, and capital-dependent innovation creates a feedback topology with specific properties---path dependence, threshold effects, a closing window, and dominance of energy transition timing over other variables. These structural properties are robust across a wide range of calibrations. To demonstrate this concretely, Table~\ref{tab:robustness} reports key outcomes under 14 alternative calibrations, each varying a single parameter while holding the rest at baseline.
 
 \input{figures/robustness_table}
 
-The quantitative outcomes vary substantially---median GDP in 2100 ranges from 22T (late fusion mean) to 1,917T (early fusion or low institutional fragility)---but the qualitative structure is invariant. In every calibration, a substantial fraction of paths achieves abundance, a substantial fraction never recovers, and the split between these regimes is dominated by fusion timing. The damage exponent and institutional fragility coefficient are the most influential non-fusion parameters: raising the damage exponent from 2.6 to 3.2 roughly doubles the never-recovered fraction, while lowering the institutional coefficient from 0.035 to 0.020 more than triples median GDP. But even in the most optimistic non-fusion calibrations, late fusion ($\mu = 2045$) produces median GDP of only 22T and 66\% never-recovered paths. No parameter adjustment compensates for late fusion.
+The quantitative outcomes vary substantially---median GDP in 2100 ranges from 19T (late fusion mean) to 1,911T (early fusion or low institutional fragility)---but the qualitative structure is invariant. In every calibration, a substantial fraction of paths achieves abundance, a substantial fraction never recovers, and the split between these regimes is dominated by fusion timing. The damage exponent and institutional fragility coefficient are the most influential non-fusion parameters: raising the damage exponent from 2.6 to 3.2 roughly doubles the never-recovered fraction, while lowering the institutional coefficient from 0.035 to 0.020 more than triples median GDP. But even in the most optimistic non-fusion calibrations, late fusion ($\mu = 2045$) produces median GDP of only 19T and 65\% never-recovered paths. No parameter adjustment compensates for late fusion.
+
+The clean energy ceiling variations deserve particular attention. Even tripling the baseline ceiling from 0.08 to 0.24---implying that pre-fusion renewables could offset \emph{twice} the baseline EROI decay rate---raises median GDP only from 537T to 699T and abundance from 51\% to 56\%. The effect is modest because the clean energy contribution faces three compounding headwinds: the temperature-driven EROI decay term ($0.03 \times T$) grows over time while the ceiling is fixed; institutional degradation reduces deployment capacity (the $I(t)$ multiplier); and the logistic adoption curve means the full ceiling is not reached until the late 2030s, by which point significant EROI damage has already accumulated. This is consistent with the empirical finding of \citet{york2019energy} that renewable energy growth has historically \emph{added} to rather than \emph{displaced} fossil fuel consumption---the structural dynamics of energy systems resist simple substitution, and the net effect on blended EROI is smaller than nameplate renewable capacity would suggest. In the model, as in reality, pre-fusion clean energy buys time but does not provide escape velocity.
 
 The specific percentages and dollar figures reported in Section~7 should therefore be read as \emph{illustrative}, not predictive. They demonstrate the shape of the outcome distribution under one plausible calibration. The policy-relevant conclusions---that fusion commercialization is the critical-path variable, that the window is narrow, and that the trap is real---follow from the model's structure, not from the precise values of its parameters.
 
@@ -525,9 +602,9 @@ The substantive conclusions of the model---the existence of a closing window, th
 
 Modern civilization sits at a thermodynamic threshold. The energy surpluses that fund advanced research, complex supply chains, and institutional stability are being eroded by climate change through a mechanism we have called the survival basket tax. The technologies that could resolve this crisis---above all, commercial fusion energy---are themselves products of the surplus economy that climate change is degrading. The result is a closing window whose existence vindicates neither the Polyannaists nor the ecologists exclusively: the vast majority of simulation paths pass through a period where things get substantially worse before they get better, with fusion timing determining the depth and duration of the trough.
 
-The simulation results are stark. Fusion timing is the single strongest predictor of whether civilization reaches 2100 in a state of abundance or prolonged decline. The transition zone is narrow---roughly 15 years---and we are currently inside it. Each year of delay in the critical 2030--2040 window costs approximately 115--166 trillion dollars in expected terminal GDP, and the logistic adoption curve means that even ``early'' fusion takes over a decade to reach full deployment, making the urgency of first commercialization all the greater.
+The simulation results are stark. Fusion timing is the single strongest predictor of whether civilization reaches 2100 in a state of abundance or prolonged decline. The transition zone is narrow---roughly 15 years---and we are currently inside it. Each year of delay in the critical 2030--2040 window costs approximately 117--157 trillion dollars in expected terminal GDP, and the logistic adoption curve means that even ``early'' fusion takes over a decade to reach full deployment, making the urgency of first commercialization all the greater.
 
-The implication is not that other climate policies are unimportant, but that they are \emph{insufficient} without a breakthrough in energy supply. Adaptation buys time. Mitigation slows the damage. But only a step-change in EROI---fusion or its equivalent---provides escape velocity from the thermodynamic trap. Emerging AI capabilities---from neurosymbolic tools that optimize cross-domain R\&D portfolios \citep{walters2025gaiatt} to machine-learning systems that compress experimental iteration cycles \citep{catf2024aifusion}---offer a genuine prospect of widening the window from the inside. The social return on accelerating that step-change is, by any standard measure, the largest investment opportunity in human history.
+The implication is not that other climate policies are unimportant, but that they are \emph{insufficient} without a breakthrough in energy supply. Adaptation buys time. Mitigation slows the damage. Pre-fusion clean energy---even at triple the baseline deployment ceiling---improves median outcomes only modestly, because the compounding temperature-driven EROI decay and institutional erosion outpace what renewables alone can offset. Only a step-change in EROI---fusion or its equivalent---provides escape velocity from the thermodynamic trap. Emerging AI capabilities---from neurosymbolic tools that optimize cross-domain R\&D portfolios \citep{walters2025gaiatt} to machine-learning systems that compress experimental iteration cycles \citep{catf2024aifusion}---offer a genuine prospect of widening the window from the inside. The social return on accelerating that step-change is, by any standard measure, the largest investment opportunity in human history.
 
 The window is open. It will not remain so indefinitely.
 
