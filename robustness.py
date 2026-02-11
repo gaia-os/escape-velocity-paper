@@ -321,8 +321,8 @@ ax1.legend(lines1 + lines2, labels1 + labels2, loc='center right', fontsize=10,
            framealpha=0.9)
 
 # Annotation: transition zone
-ax1.axvspan(2030, 2045, alpha=0.08, color='orange', label='_nolegend_')
-ax1.text(2037.5, max(gdp_plot) * 0.85, 'Transition\nZone', ha='center', va='top',
+ax1.axvspan(2026, 2045, alpha=0.08, color='orange', label='_nolegend_')
+ax1.text(2035.5, max(gdp_plot) * 0.85, 'Transition\nZone', ha='center', va='top',
          fontsize=9, fontstyle='italic', color='#92400e')
 
 ax1.set_title('Causal Effect of Fusion Timing', fontsize=14, fontweight='bold')
